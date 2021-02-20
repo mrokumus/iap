@@ -13,7 +13,12 @@ class Ios extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('ios', function (Blueprint $table) {
+            $table->id()->autoIncrement();
+            $table->string('appId',17)->unique();
+            $table->dateTime('expireDate');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -23,6 +28,7 @@ class Ios extends Migration
      */
     public function down()
     {
-        //
+        Schema::drop('ios');
+
     }
 }

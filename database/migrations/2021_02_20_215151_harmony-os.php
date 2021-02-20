@@ -13,7 +13,12 @@ class HarmonyOs extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('harmony-os', function (Blueprint $table) {
+            $table->id()->autoIncrement();
+            $table->string('appId',17)->unique();
+            $table->dateTime('expireDate');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -23,6 +28,7 @@ class HarmonyOs extends Migration
      */
     public function down()
     {
-        //
+        Schema::drop('harmony-os');
+
     }
 }

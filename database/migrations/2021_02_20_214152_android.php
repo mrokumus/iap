@@ -13,7 +13,12 @@ class Android extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('android', function (Blueprint $table) {
+            $table->id()->autoIncrement();
+            $table->string('appId',17)->unique();
+            $table->dateTime('expireDate');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -23,6 +28,7 @@ class Android extends Migration
      */
     public function down()
     {
-        //
+        Schema::drop('android');
+
     }
 }
