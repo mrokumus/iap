@@ -13,7 +13,13 @@ class Devices extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('devices', function (Blueprint $table) {
+
+            $table->string('uid',12)->primary();
+            $table->enum('os', ['iOS', 'Android','HarmonyOs']);
+            $table->string('language',10);
+            $table->timestamps();
+        });
     }
 
     /**
@@ -23,6 +29,6 @@ class Devices extends Migration
      */
     public function down()
     {
-        //
+        Schema::drop('devices');
     }
 }
