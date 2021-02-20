@@ -13,7 +13,17 @@ class Applications extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('applications', function (Blueprint $table) {
+            $table->string('appId',17)->unique();
+            $table->string('uid',12);
+            $table->foreign('uid')
+                ->references('uid')
+                ->on('devices')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->dateTimeTz('expireDate');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -23,6 +33,6 @@ class Applications extends Migration
      */
     public function down()
     {
-        //
+        Schema::drop('applications');
     }
 }
