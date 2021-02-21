@@ -14,9 +14,16 @@ class Ios extends Migration
     public function up()
     {
         Schema::create('ios', function (Blueprint $table) {
-            $table->id()->autoIncrement();
-            $table->string('appId',17)->unique();
-            $table->dateTime('expireDate');
+
+            $table->string('purchaseId',17)->primary();
+            $table->foreign('purchaseId')
+                ->references('purchaseId')
+                ->on('purchases')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->string('receipt',10)->unique();
+            $table->enum('validation', [0, 1]);
+            $table->dateTimeTz('expireDate');
             $table->timestamps();
         });
     }
@@ -29,6 +36,5 @@ class Ios extends Migration
     public function down()
     {
         Schema::drop('ios');
-
     }
 }

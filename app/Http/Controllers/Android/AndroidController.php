@@ -7,5 +7,9 @@ use Illuminate\Http\Request;
 
 class AndroidController extends Controller
 {
-    //
+    public function check(Request $request)
+    {
+
+    }
+
 }
