@@ -14,5 +14,6 @@ Route::post('check-subscription', [\App\Http\Controllers\Api\CheckSubscriptionCo
 
 //Android Route
 Route::get('android', [\App\Http\Controllers\Api\Android\AndroidController::class, 'check']);
+
 //Ios Route
 Route::get('ios', [\App\Http\Controllers\Api\Ios\IosController::class, 'check']);

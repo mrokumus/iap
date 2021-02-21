@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\Android\AndroidController;
 use App\Http\Controllers\Controller;
 use App\Models\Android\AndroidModel;
 use App\Models\Api\PurchaseModel;
 use App\Models\Api\RegisterModel;
 use App\Models\Api\ApplicationModel;
 use App\Models\Ios\IosModel;
-use http\Exception;
 use Illuminate\Http\Request;
+use GuzzleHttp;
 
 class PurchaseController extends Controller
 {
-    public function purchase(Request $request): \Illuminate\Http\JsonResponse
+    public function purchase(Request $request): \Illuminate\Http\RedirectResponse
     {
+        $receipt = $request->receipt;
+
         //clientToken Değeri ile Requestin geldiği cihazı ve sistemini belirliyoruz.
         $register = RegisterModel::where('clientToken', '=', $request->clientToken)->get();
         $uid = $register[0]->uid;
@@ -28,16 +31,24 @@ class PurchaseController extends Controller
         $purchaseId = $uid . $appId;
 
 
-        if ($os == 1)#android
+        if ($os == 1) #android
         {
-            $result = AndroidModel::where('receipt','=',$request->receipt)->list('receipt','validation');
 
-        }else{#ios
-            $result = IosModel::where('receipt','=',$request->receipt)->get();
+            //apidan veri al
+
+
+        } else {#ios
+
+
         }
-        $purchase = ['purchaseId' => $purchaseId,];
 
-        return response()->json($result, 200);
+        $purchase =
+            [
+                'purchaseId' => $purchaseId,
+                'expireDate' => $purchaseId,
+            ];
+
+//        return response()->json($result, 200);
 
 //        try {
 //            PurchaseModel::create($purchase);

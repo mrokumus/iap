@@ -5,12 +5,11 @@ namespace App\Http\Controllers\Api\Android;
 use App\Http\Controllers\Controller;
 use App\Models\Android\AndroidModel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 
 class AndroidController extends Controller
 {
 
-    public function check(Request $request)
+    public static function check(Request $request)
     {
         //Requesten gelen recipt'in bulunduğu satırın çekilmesi
         $data = AndroidModel::where('receipt', '=', $request->receipt)->get();
