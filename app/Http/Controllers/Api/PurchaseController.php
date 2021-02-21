@@ -15,8 +15,6 @@ class PurchaseController extends Controller
 {
     public function purchase(Request $request): \Illuminate\Http\JsonResponse
     {
-        $receipt = $request->receipt;
-
         //clientToken Değeri ile Requestin geldiği cihazı ve sistemini belirliyoruz.
         $register = RegisterModel::where('clientToken', '=', $request->clientToken)->get();
         $uid = $register[0]->uid;
@@ -32,15 +30,14 @@ class PurchaseController extends Controller
 
         if ($os == 1)#android
         {
-            $result = AndroidModel::where('receipt','=',$receipt)->get;
-
+            $result = AndroidModel::where('receipt','=',$request->receipt)->list('receipt','validation');
 
         }else{#ios
-            $result = IosModel::where('receipt','=',$receipt)->get;
+            $result = IosModel::where('receipt','=',$request->receipt)->get();
         }
         $purchase = ['purchaseId' => $purchaseId,];
 
-        return response()->json([$result, 200);
+        return response()->json($result, 200);
 
 //        try {
 //            PurchaseModel::create($purchase);
