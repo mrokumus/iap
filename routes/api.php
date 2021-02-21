@@ -13,6 +13,6 @@ Route::post('purchase', [\App\Http\Controllers\Api\PurchaseController::class, 'p
 Route::post('check-subscription', [\App\Http\Controllers\Api\CheckSubscriptionController::class, 'checkSubscription']);
 
 //Android Route
-Route::post('check-subscription', [\App\Http\Controllers\Api\CheckSubscriptionController::class, 'checkSubscription']);
+Route::post('android', [\App\Http\Controllers\Api\Android\AndroidController::class, 'check']);
 //Ios Route
-Route::post('check-subscription', [\App\Http\Controllers\Api\CheckSubscriptionController::class, 'checkSubscription']);
+Route::post('ios', [\App\Http\Controllers\Api\Ios\IosController::class, 'check']);
