@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Applications extends Migration
+class Purchase extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,15 @@ class Applications extends Migration
      */
     public function up()
     {
-        Schema::create('applications', function (Blueprint $table) {
-            $table->string('appId',5)->unique();
-            $table->string('uid',12);
-            $table->foreign('uid')
+        Schema::create('purchase', function (Blueprint $table) {
+
+            $table->string('purchaseId',17)->primary();
+            $table->foreign('purchaseId')
                 ->references('uid')
                 ->on('devices')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+            $table->dateTimeTz('expireDate')->unique();
             $table->timestamps();
         });
     }
@@ -32,6 +33,6 @@ class Applications extends Migration
      */
     public function down()
     {
-        Schema::drop('applications');
+        Schema::drop('purchase');
     }
 }

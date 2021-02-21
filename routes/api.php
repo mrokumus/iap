@@ -8,3 +8,5 @@ Route::middleware('auth:api')->get('/user',function (Request $request) {
 });
 
 Route::post('register', [\App\Http\Controllers\Api\RegisterController::class, 'register']);
+Route::post('purchase', [\App\Http\Controllers\Api\PurchaseController::class, 'purchase']);
+Route::post('check-subscription', [\App\Http\Controllers\Api\CheckSubscriptionController::class, 'checkSubscription']);

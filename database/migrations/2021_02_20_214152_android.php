@@ -15,8 +15,9 @@ class Android extends Migration
     {
         Schema::create('android', function (Blueprint $table) {
             $table->id()->autoIncrement();
-            $table->string('appId',17)->unique();
-            $table->dateTime('expireDate');
+            $table->string('appId',5)->unique();
+            $table->string('clientId',17);
+            $table->dateTimeTz('expireDate');
             $table->timestamps();
         });
     }

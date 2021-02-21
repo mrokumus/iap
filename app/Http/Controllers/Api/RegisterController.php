@@ -14,42 +14,42 @@ class RegisterController extends Controller
 
     public function register(Request $request): \Illuminate\Http\JsonResponse
     {
-        //Eğer $request->token varsa önce DB'de token araması yapılyor.
-        if (!$request->token == null) {
-            $device = RegisterModel::where('token', $request->token)->get();
-            //Eğer $request->token DB'de kayıtlı değilse yeni token oluşturulup kayıt yapılıyor.
+        //Eğer $request->clientToken varsa önce DB'de clientToken araması yapılyor.
+        if (!$request->clientToken == null) {
+            $device = RegisterModel::where('clientToken', $request->clientToken)->get();
+            //Eğer $request->clientToken DB'de kayıtlı değilse yeni clientToken oluşturulup kayıt yapılıyor.
             if (isset($device)) {
-                $token = Str::random(10);
+                $clientToken = Str::random(10);
                 $device = [
                     'uid' => $request->uid,
                     'os' => $request->os,
                     'language' => $request->language,
-                    'token' => $token
+                    'clientToken' => $clientToken
                 ];
                 RegisterModel::create($device);
-                return response()->json(['Kayıt Başarılı','Client Token: ' . $token], 200);
-            //Eğer $request->token DB'de varsa 200 OK mesajı gönderiliyor.
+                return response()->json(['Kayıt Başarılı','Client Token: ' . $clientToken], 200);
+            //Eğer $request->clientToken DB'de varsa 200 OK mesajı gönderiliyor.
             } else {
-                return response()->json(['Kayıt Zaten Var !','Client Token: ' . $request->token], 200);
+                return response()->json(['Kayıt Zaten Var !','Client Token: ' . $request->clientToken], 200);
             }
         } else {
-        //Eğer $request->token yoksa kayıt yapılıyor.
-            $token = Str::random(10);
+        //Eğer $request->clientToken yoksa kayıt yapılıyor.
+            $clientToken = Str::random(10);
             $device = [
                 'uid' => $request->uid,
                 'os' => $request->os,
                 'language' => $request->language,
-                'token' => $token
+                'clientToken' => $clientToken
             ];
             $appId = [
-              'appId' => $request->appId,
+              'appId' => $request->uid.$request->appId,
               'uid' =>$request->uid,
 
             ];
 
             RegisterModel::create($device);
             ApplicationModel::create($appId);
-            return response()->json(['Kayıt Başarılı','Client Token: ' . $token], 200);
+            return response()->json(['Kayıt Başarılı','Client Token: ' . $clientToken], 200);
         }
     }
 }
