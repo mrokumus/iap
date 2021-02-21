@@ -18,6 +18,7 @@ class Devices extends Migration
             $table->string('uid',12)->primary();
             $table->enum('os', ['iOS', 'Android','HarmonyOs']);
             $table->string('language',10);
+            $table->string('token',15)->unique();
             $table->timestamps();
         });
     }
