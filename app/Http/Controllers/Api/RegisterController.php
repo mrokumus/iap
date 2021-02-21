@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Api\RegisterModel;
+use App\Models\Api\ApplicationModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -40,7 +41,14 @@ class RegisterController extends Controller
                 'language' => $request->language,
                 'token' => $token
             ];
+            $appId = [
+              'appId' => $request->appId,
+              'uid' =>$request->uid,
+
+            ];
+
             RegisterModel::create($device);
+            ApplicationModel::create($appId);
             return response()->json(['Kayıt Başarılı','Client Token: ' . $token], 200);
         }
     }
