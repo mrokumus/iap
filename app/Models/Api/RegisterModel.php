@@ -16,7 +16,7 @@ class RegisterModel extends Model
             'uid',
             'os',
             'language',
-            'token',
+            'clientToken',
         ];
 
 }

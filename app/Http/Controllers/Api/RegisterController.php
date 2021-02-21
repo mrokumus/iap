@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Api\RegisterModel;
 use App\Models\Api\ApplicationModel;
+use http\Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -27,13 +28,13 @@ class RegisterController extends Controller
                     'clientToken' => $clientToken
                 ];
                 RegisterModel::create($device);
-                return response()->json(['Kayıt Başarılı','Client Token: ' . $clientToken], 200);
-            //Eğer $request->clientToken DB'de varsa 200 OK mesajı gönderiliyor.
+                return response()->json(['Kayıt Başarılı', 'Client Token: ' . $clientToken], 200);
+                //Eğer $request->clientToken DB'de varsa 200 OK mesajı gönderiliyor.
             } else {
-                return response()->json(['Kayıt Zaten Var !','Client Token: ' . $request->clientToken], 200);
+                return response()->json(['Kayıt Zaten Var !', 'Client Token: ' . $request->clientToken], 200);
             }
         } else {
-        //Eğer $request->clientToken yoksa kayıt yapılıyor.
+            //Eğer $request->clientToken yoksa kayıt yapılıyor.
             $clientToken = Str::random(10);
             $device = [
                 'uid' => $request->uid,
@@ -42,14 +43,17 @@ class RegisterController extends Controller
                 'clientToken' => $clientToken
             ];
             $appId = [
-              'appId' => $request->uid.$request->appId,
-              'uid' =>$request->uid,
-
+                'appId' => Str::random(5),
+                'uid' => $request->uid,
             ];
 
-            RegisterModel::create($device);
-            ApplicationModel::create($appId);
-            return response()->json(['Kayıt Başarılı','Client Token: ' . $clientToken], 200);
+            try {
+                RegisterModel::create($device);
+                ApplicationModel::create($appId);
+            } catch (Exception $e) {
+                return response()->json(['Bir Sorun Oluştu: '. $e->getMessage()], 500);
+            }
+            return response()->json(['Kayıt Başarılı', 'Client Token: ' . $clientToken], 200);
         }
     }
 }
