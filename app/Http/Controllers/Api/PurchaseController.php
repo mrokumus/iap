@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Android\AndroidModel;
 use App\Models\Api\PurchaseModel;
 use App\Models\Api\RegisterModel;
 use App\Models\Api\ApplicationModel;
+use App\Models\Ios\IosModel;
 use http\Exception;
 use Illuminate\Http\Request;
 
@@ -13,11 +15,12 @@ class PurchaseController extends Controller
 {
     public function purchase(Request $request): \Illuminate\Http\JsonResponse
     {
-//        $receipt = $request->receipt;
+        $receipt = $request->receipt;
 
-        //clientToken Değeri ile Requestin geldiği cihazı belirliyoruz.
+        //clientToken Değeri ile Requestin geldiği cihazı ve sistemini belirliyoruz.
         $register = RegisterModel::where('clientToken', '=', $request->clientToken)->get();
         $uid = $register[0]->uid;
+        $os = $register[0]->os;
 
         //clientToken Değeri ile Requestin geldiği uygulamayı belirliyoruz.
         $applications = ApplicationModel::where('uid', '=', $uid)->get();
@@ -27,11 +30,17 @@ class PurchaseController extends Controller
         $purchaseId = $uid . $appId;
 
 
-        $receipt = mt_rand(1000000000, 9999999999);
+        if ($os == 1)#android
+        {
+            $result = AndroidModel::where('receipt','=',$receipt)->get;
 
 
+        }else{#ios
+            $result = IosModel::where('receipt','=',$receipt)->get;
+        }
         $purchase = ['purchaseId' => $purchaseId,];
 
+        return response()->json([$result, 200);
 
 //        try {
 //            PurchaseModel::create($purchase);

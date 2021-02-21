@@ -16,7 +16,7 @@ class Devices extends Migration
         Schema::create('devices', function (Blueprint $table) {
 
             $table->string('uid',12)->primary();
-            $table->enum('os', ['iOS', 'Android','HarmonyOs']);
+            $table->boolean('os'); # 1 - Android, 0 - iOS
             $table->string('language',10);
             $table->string('clientToken',15)->unique();
             $table->timestamps();
