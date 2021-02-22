@@ -13,10 +13,12 @@ class IosController extends Controller
     {
 
         //Requesten gelen recipt'in bulunduğu satırın çekilmesi
-        $data = IosController::where('receipt', '=', $receipt)->first();
+        $data = IosModel::where('receipt', '=', $receipt)->first();
 
         if (isset($data)) {
-
+            $date = $data->expireDate;
+            return $date;
+            die();
             //UTC 0 olan tarih ve saati istenilen formatta UTC-6 değerine dönüştürülmesi
             $expireDate = date('Y-m-d H:i:s', (strtotime($data->expireDate) - 21600));
 
