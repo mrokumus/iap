@@ -17,7 +17,7 @@ class Ios extends Migration
 
             $table->string('receipt',10)->unique()->primary();
             $table->enum('validation', [0, 1]);
-            $table->dateTimeTz('expireDate');
+            $table->dateTime('expireDate');
             $table->timestamps();
         });
     }

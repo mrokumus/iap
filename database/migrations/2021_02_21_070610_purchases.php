@@ -16,7 +16,7 @@ class Purchases extends Migration
         Schema::create('purchases', function (Blueprint $table) {
 
             $table->string('purchaseId',17)->primary();
-            $table->dateTimeTz('expireDate');
+            $table->dateTime('expireDate');
             $table->timestamps();
 
         });
