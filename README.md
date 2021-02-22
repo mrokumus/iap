@@ -27,4 +27,4 @@ api/ios/{receipt}
 
 ----
 ##DB
-![alt text](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true)
+![](https://github.com/mrokumus/iap/blob/main/sql/sql.png?raw=true)
