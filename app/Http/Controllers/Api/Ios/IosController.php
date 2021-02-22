@@ -13,9 +13,8 @@ class IosController extends Controller
     {
 
         //Requesten gelen recipt'in bulunduğu satırın çekilmesi
-        $data = IosModel::where('receipt', '=', $receipt)->first();
+        $data = IosController::where('receipt', '=', $receipt)->first();
 
-        //Receipt kayıtlı değil ise hata mesajı dönğyoruz.
         if (isset($data)) {
 
             //UTC 0 olan tarih ve saati istenilen formatta UTC-6 değerine dönüştürülmesi
@@ -30,6 +29,9 @@ class IosController extends Controller
             $currentDate = date('Y-m-d H:i:s', $mytime);
 
             //Eğer recipt değerinin sonu 1 ise Response true dönecek değilse false
+
+
+            //deger yoksa hata donsun
             if (substr($validation, -1) == 1) {
                 //Eğer şimdiki zaman bitiş tarihinden küçükse respons true dönecek
                 if ($currentDate < $expireDate) {
@@ -39,7 +41,7 @@ class IosController extends Controller
                             'code' => 200,
                             'expireDate' => $expireDate
                         ];
-                    return response()->json($response);
+                    return $response;
                 } elseif ($currentDate >= $expireDate) {
                     $response =
                         [
@@ -47,7 +49,7 @@ class IosController extends Controller
                             'code' => 401,
                             'message' => 'Abonelik süreniz dolmuştur. Yenileyiniz!'
                         ];
-                    return response()->json($response);
+                    return $response;
                 }
             } else {
                 $response =
@@ -55,7 +57,7 @@ class IosController extends Controller
                         'status' => false,
                         'code' => 401,
                     ];
-                return response()->json($response, 401);
+                return $response;
             }
         } else {
             $response =
@@ -64,7 +66,7 @@ class IosController extends Controller
                     'code' => 404,
                     'message' => 'Receipt bulunamadı'
                 ];
-            return response()->json($response, 404);
+            return $response;
         }
     }
 }

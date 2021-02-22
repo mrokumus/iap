@@ -41,7 +41,7 @@ class AndroidController extends Controller
                             'code' => 200,
                             'expireDate' => $expireDate
                         ];
-                    return response()->json($response);
+                    return $response;
                 } elseif ($currentDate >= $expireDate) {
                     $response =
                         [
@@ -49,7 +49,7 @@ class AndroidController extends Controller
                             'code' => 401,
                             'message' => 'Abonelik süreniz dolmuştur. Yenileyiniz!'
                         ];
-                    return response()->json($response);
+                    return $response;
                 }
             } else {
                 $response =
@@ -57,7 +57,7 @@ class AndroidController extends Controller
                         'status' => false,
                         'code' => 401,
                     ];
-                return response()->json($response, 401);
+                return $response;
             }
         } else {
             $response =
@@ -66,7 +66,7 @@ class AndroidController extends Controller
                     'code' => 404,
                     'message' => 'Receipt bulunamadı'
                 ];
-            return response()->json($response, 404);
+            return $response;
         }
     }
 }
