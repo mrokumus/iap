@@ -11,12 +11,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 //Api Routes
 Route::post('register', [\App\Http\Controllers\Api\RegisterController::class, 'register']);
-Route::get('get', function (Request $request) {
-    $str = Str::random(3);
-    return response()->json(['Fine '.$str]);
-});
 Route::post('purchase', [\App\Http\Controllers\Api\PurchaseController::class, 'purchase']);
-Route::post('check-subscription', [\App\Http\Controllers\Api\CheckSubscriptionController::class, 'checkSubscription']);
+Route::post('check', [\App\Http\Controllers\Api\CheckSubscriptionController::class, 'checkSubscription']);
 
 //Android Route
 Route::get('android/{receipt}', [\App\Http\Controllers\Api\Android\AndroidController::class, 'check']);
