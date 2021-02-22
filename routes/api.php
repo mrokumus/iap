@@ -1,9 +1,7 @@
 <?php
 
-use App\Http\Controllers\Api\Android\AndroidController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
