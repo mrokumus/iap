@@ -52,8 +52,10 @@ class PurchaseController extends Controller
 
         //Mock Api dan gelen verilerin değişlkenlere aktarılması
         $status = $apiResponse['status'];
-        $exDate = isset($apiResponse['expireDate']);
-        $expireDate = date('Y-m-d H:i:s', $exDate);
+        if(isset($apiResponse['expireDate'])){
+            $expireDate = date('Y-m-d H:i:s', strtotime($apiResponse['expireDate']));
+        };
+
         $message = isset($apiResponse['message']);
         $code = $apiResponse['code'];
 
