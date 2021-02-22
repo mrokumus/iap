@@ -9,51 +9,70 @@ use http\Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use PDOException;
 
 class RegisterController extends Controller
 {
 
-    public function register(Request $request): \Illuminate\Http\JsonResponse
+    public function register($uid, $os, $language, $clientToken = null)
     {
-        //Eğer $request->clientToken varsa önce DB'de clientToken araması yapılyor.
-        if (!$request->clientToken == null) {
-            $device = RegisterModel::where('clientToken', $request->clientToken)->get();
-            //Eğer $request->clientToken DB'de kayıtlı değilse yeni clientToken oluşturulup kayıt yapılıyor.
-            if (isset($device)) {
+        //uid'si verilen ciahazın DB'den çekilmesi.
+        $device = RegisterModel::where('uid', '=', $uid)->get();
+
+        if (!empty($device[0])) {
+
+            //uid bilgisi ile clientTokenın belirlenmesi.
+            if (!empty($device[0]->clientToken)) {
+                $clientToken = $device[0]->clientToken;
+                $message = [
+                    'uid' => $uid,
+                    'os' => $os,
+                    'language' => $language,
+                    'clientToken' => $clientToken,
+                ];
+                return response()->json($message);
+            } else {
+                //Eğer clientToken DB'de kayıtlı değilse yeni clientToken oluşturulup kayıt yapılıyor.
                 $clientToken = Str::random(10);
-                $device = [
-                    'uid' => $request->uid,
-                    'os' => $request->os,
-                    'language' => $request->language,
+                $dev = [
+                    'uid' => $uid,
+                    'os' => $os,
+                    'language' => $language,
                     'clientToken' => $clientToken
                 ];
-                RegisterModel::create($device);
-                return response()->json(['Kayıt Başarılı', 'Client Token: ' . $clientToken], 200);
-                //Eğer $request->clientToken DB'de varsa 200 OK mesajı gönderiliyor.
-            } else {
-                return response()->json(['Kayıt Zaten Var !', 'Client Token: ' . $request->clientToken], 200);
-            }
-        } else {
-            //Eğer $request->clientToken yoksa kayıt yapılıyor.
-            $clientToken = Str::random(10);
-            $device = [
-                'uid' => $request->uid,
-                'os' => $request->os,
-                'language' => $request->language,
-                'clientToken' => $clientToken
-            ];
-            $appId = [
-                'appId' => Str::random(5),
-                'uid' => $request->uid,
-            ];
+                $app = [
+                    'appId' => Str::random(5),
+                    'uid' => $uid,
+                ];
+                try {
+                    RegisterModel::where('uid',$uid)->update($dev);
+                    ApplicationModel::create($app);
+                    $message = [
+                        'uid' => $uid,
+                        'os' => $os,
+                        'language' => $language,
+                        'clientToken' => $clientToken,
+                        'message' => 'Cihaz Kaydedildi'
+                    ];
+                    return response()->json($message);
 
-            try {
-                RegisterModel::create($device);
-                ApplicationModel::create($appId);
-            } catch (Exception $e) {
-                return response()->json(['Bir Sorun Oluştu: '. $e->getMessage()], 500);
+                } catch (PDOException $e) {
+                    $message = [
+                        'uid' => $uid,
+                        'os' => $os,
+                        'language' => $language,
+                        'clientToken' => $clientToken,
+                        'message' => [
+                            'Bir sorun ile karşılaşıldı. Hata:' => $e
+                        ]
+                    ];
+                    return response()->json($message, 500);
+                }
             }
-            return response()->json(['Kayıt Başarılı', 'Client Token: ' . $clientToken], 200);
+
+        } else {
+            return response()->json('Böyle bir cihaz yok', 400);
         }
     }
+
 }
