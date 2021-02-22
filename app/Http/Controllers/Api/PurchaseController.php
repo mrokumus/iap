@@ -16,16 +16,7 @@ class PurchaseController extends Controller
 
     private $receipt;
     private $os;
-
-
-//    function callApi()
-//    {
-//        $AndroidController = new AndroidController();
-//        $name = $AndroidController->check($this->receipt);
-//        echo $name;    //Prints John
-//    }
-
-
+    
     public function purchase(Request $request): \Illuminate\Http\JsonResponse
     {
         //clientToken Değeri ile Requestin geldiği cihazı ve sistemini belirliyoruz.
