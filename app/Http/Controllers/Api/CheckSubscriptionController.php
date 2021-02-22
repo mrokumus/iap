@@ -7,5 +7,10 @@ use Illuminate\Http\Request;
 
 class CheckSubscriptionController extends Controller
 {
-    //
+
+    public function checkSubscription()
+    {
+        return response()->json('haha');
+
+    }
 }
