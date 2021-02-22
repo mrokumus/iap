@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Api\PurchaseModel;
 use App\Models\Api\RegisterModel;
 use App\Models\Api\ApplicationModel;
-use Illuminate\Http\Request;
 use PDOException;
 
 class PurchaseController extends Controller
@@ -17,13 +16,13 @@ class PurchaseController extends Controller
     private $receipt;
     private $os;
 
-    public function purchase(Request $request): \Illuminate\Http\JsonResponse
+    public function purchase($receipt, $clientToken)
     {
         //clientToken Değeri ile Requestin geldiği cihazı ve sistemini belirliyoruz.
-        $register = RegisterModel::where('clientToken', '=', $request->clientToken)->get();
+        $register = RegisterModel::where('clientToken', '=', $clientToken)->get();
         $uid = $register[0]->uid;
         $this->os = $register[0]->os;
-        $this->receipt = $request->receipt;
+        $this->receipt = $receipt;
 
         //clientToken Değeri ile Requestin geldiği uygulamayı belirliyoruz.
         $applications = ApplicationModel::where('uid', '=', $uid)->get();
