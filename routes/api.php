@@ -12,4 +12,4 @@ Route::post('check', [\App\Http\Controllers\Api\CheckSubscriptionController::cla
 Route::get('android/{receipt}', [\App\Http\Controllers\Api\Android\AndroidController::class, 'check']);
 
 //Ios Route
-Route::get('ios', [\App\Http\Controllers\Api\Ios\IosController::class, 'check']);
+Route::get('ios/{receipt}', [\App\Http\Controllers\Api\Ios\IosController::class, 'check']);
