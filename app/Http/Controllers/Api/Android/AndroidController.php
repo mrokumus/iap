@@ -18,7 +18,8 @@ class AndroidController extends Controller
         if (isset($data)) {
 
             //UTC 0 olan tarih ve saati istenilen formatta UTC-6 değerine dönüştürülmesi
-            $expireDate = date('Y-m-d H:i:s', (strtotime($data->expireDate) - 21600));
+            $date = strtotime($data->expireDate);
+            $expireDate = date('Y-m-d H:i:s', ($date - 21600));
 
             //String olan ve sonu rakam olan validation değişkenin oluşturulması
             $validation = $data->receipt . $data->validation;
