@@ -16,7 +16,7 @@ class PurchaseController extends Controller
 
     private $receipt;
     private $os;
-    
+
     public function purchase(Request $request): \Illuminate\Http\JsonResponse
     {
         //clientToken Değeri ile Requestin geldiği cihazı ve sistemini belirliyoruz.
@@ -52,7 +52,8 @@ class PurchaseController extends Controller
 
         //Mock Api dan gelen verilerin değişlkenlere aktarılması
         $status = $apiResponse['status'];
-        $expireDate = isset($apiResponse['expireDate']);
+        $exDate = isset($apiResponse['expireDate']);
+        $expireDate = date('Y-m-d H:i:s', $exDate);
         $message = isset($apiResponse['message']);
         $code = $apiResponse['code'];
 
@@ -73,7 +74,9 @@ class PurchaseController extends Controller
                 return response()->json([
                     'status' => false,
                     'code' => 500,
-                    'message' => 'Bir sorun oluştu. Daha sonra tekrar deneyin'
+                    'message' => [
+                        'Bir sorun oluştu. Daha sonra tekrar deneyin' => $e
+                    ],
                 ], 500);
             }
         } else {
