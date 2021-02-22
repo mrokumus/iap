@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Api\PurchaseModel;
 use App\Models\Api\RegisterModel;
 use App\Models\Api\ApplicationModel;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use PDOException;
 
@@ -29,7 +28,6 @@ class PurchaseController extends Controller
 
     public function purchase(Request $request): \Illuminate\Http\JsonResponse
     {
-
         //clientToken Değeri ile Requestin geldiği cihazı ve sistemini belirliyoruz.
         $register = RegisterModel::where('clientToken', '=', $request->clientToken)->get();
         $uid = $register[0]->uid;
@@ -48,18 +46,12 @@ class PurchaseController extends Controller
         {
             if ($os == 1) {
                 $androidController = new AndroidController();
-                $receipt = $androidController->check($receipt);
-                $response = $receipt->original;
-                $expireDate = $response['expireDate'];
-                $status = $response['status'];
-                return ['expireDate' => $expireDate, 'status' => $status];
+                $response = $androidController->check($receipt);
+                return $response;
             } elseif ($os == 0) {
                 $iosController = new iosController();
-                $receipt = $iosController->check($receipt);
-                $response = $receipt->original;
-                $expireDate = $response['expireDate'];
-                $status = $response['status'];
-                return ['expireDate' => $expireDate, 'status' => $status];
+                $response = $iosController->check($receipt);
+                return $response;
             } else {
                 return response()->json(['Bilinmeyen İşletim Sistemi', 400]);
             }
@@ -67,27 +59,35 @@ class PurchaseController extends Controller
 
         $apiResponse = callApi($this->os, $this->receipt);
 
-        //expireDate ve status'un tanımlanması
-        $expireDate = $apiResponse['expireDate'];
+        //Mock Api dan gelen verilerin değişlkenlere aktarılması
         $status = $apiResponse['status'];
-
+        $expireDate = isset($apiResponse['expireDate']);
+        $message = isset($apiResponse['message']);
+        $code = $apiResponse['code'];
 
         //status false olma durumunda hata mesajı return ediliyor.
         if ($status == true) {
             //Purchases tablosuna veri yazılıyor.
-            //Purchase değerlerinin DB yazılması için purchase dizisi oluşturuldu.
-            $purchase = ['purchaseId' => $purchaseId, 'expireDate' => $expireDate,];
-            PurchaseModel::create($purchase);
-            return response()->json([
-                'uid' => $uid,
-                'os' => $this->os,
-                'appId' => $appId,
-                'expireDate' => $expireDate,
-            ]);
+            try {
+                //Purchase değerlerinin DB yazılması için purchase dizisi oluşturuldu.
+                $purchase = ['purchaseId' => $purchaseId, 'expireDate' => $expireDate,];
+                PurchaseModel::create($purchase);
+                return response()->json([
+                    'uid' => $uid,
+                    'os' => $this->os,
+                    'appId' => $appId,
+                    'expireDate' => $expireDate,
+                ]);
+            } catch (PDOException $e) {
+                return response()->json([
+                    'status' => false,
+                    'code' => 500,
+                    'message' => 'Bir sorun oluştu. Daha sonra tekrar deneyin'
+                ], 500);
+            }
         } else {
             //receipt kodu kabul edilmedi
-            $message = ['message' => 'Geçersiz kod'];
-            return response()->json($message, 401);
+            return response()->json($message, $code);
         }
     }
 }
