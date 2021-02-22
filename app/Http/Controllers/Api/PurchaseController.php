@@ -13,23 +13,19 @@ use PDOException;
 class PurchaseController extends Controller
 {
 
-    private $receipt;
-    private $os;
-
     public function purchase($receipt, $clientToken)
     {
         //clientToken Değeri ile Requestin geldiği cihazı ve sistemini belirliyoruz.
         $register = RegisterModel::where('clientToken', '=', $clientToken)->get();
         $uid = $register[0]->uid;
-        $this->os = $register[0]->os;
-        $this->receipt = $receipt;
+        $os = $register[0]->os;
 
         //clientToken Değeri ile Requestin geldiği uygulamayı belirliyoruz.
         $applications = ApplicationModel::where('uid', '=', $uid)->get();
         $appId = $applications[0]->appId;
 
         //Cihaz ve uygulama bilgisi ile birlikte satın alma ıd'sini oluşturuyoruz.
-        $purchaseId = $uid . $appId;
+        $purchaseId = $appId . $uid;
 
         //callApi metodu mock api'a receipt göndererek expireDate'i alıyoruz.
         function callApi($os, $receipt)
@@ -47,15 +43,17 @@ class PurchaseController extends Controller
             }
         }
 
-        $apiResponse = callApi($this->os, $this->receipt);
+        $apiResponse = callApi($os, $receipt);
 
         //Mock Api dan gelen verilerin değişlkenlere aktarılması
         $status = $apiResponse['status'];
-        if(isset($apiResponse['expireDate'])){
+        if (isset($apiResponse['expireDate'])) {
             $expireDate = date('Y-m-d H:i:s', strtotime($apiResponse['expireDate']));
         };
 
-        $message = isset($apiResponse['message']);
+        if (isset($apiResponse['message'])){
+            $message = $apiResponse['message'];
+        }
         $code = $apiResponse['code'];
 
         //status false olma durumunda hata mesajı return ediliyor.
@@ -63,11 +61,16 @@ class PurchaseController extends Controller
             //Purchases tablosuna veri yazılıyor.
             try {
                 //Purchase değerlerinin DB yazılması için purchase dizisi oluşturuldu.
-                $purchase = ['purchaseId' => $purchaseId, 'expireDate' => $expireDate,];
-                PurchaseModel::create($purchase);
+                $purchase = [
+                    'purchaseId' => $purchaseId,
+                    'receipt' => $receipt,
+                    'expireDate' => $expireDate
+                ];
+                PurchaseModel::insert($purchase);
                 return response()->json([
                     'uid' => $uid,
-                    'os' => $this->os,
+                    'os' => $os,
+                    'receipt'=>$receipt,
                     'appId' => $appId,
                     'expireDate' => $expireDate,
                 ]);
@@ -75,6 +78,7 @@ class PurchaseController extends Controller
                 return response()->json([
                     'status' => false,
                     'code' => 500,
+                    'receipt' =>$receipt,
                     'message' => [
                         'Bir sorun oluştu. Daha sonra tekrar deneyin' => $e
                     ],

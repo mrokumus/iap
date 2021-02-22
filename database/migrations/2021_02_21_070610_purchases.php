@@ -16,6 +16,7 @@ class Purchases extends Migration
         Schema::create('purchases', function (Blueprint $table) {
 
             $table->string('purchaseId',17)->primary();
+            $table->string('receipt');
             $table->dateTime('expireDate');
             $table->timestamps();
 
